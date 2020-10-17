@@ -1,0 +1,2 @@
+* QDA by Projection -- R Package
+This is the R package of *QDA by Projection* project.
