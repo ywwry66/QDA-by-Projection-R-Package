@@ -4,7 +4,15 @@
 \alias{qdap}
 \title{qdap}
 \usage{
-qdap(x, y, xnew, lambda = 0, iter = 1, method = "Penalization", optim = "BFGS")
+qdap(
+  x,
+  y,
+  xnew,
+  lambda = 0,
+  iter = 1,
+  method = "Penalization",
+  optim = "codesc"
+)
 }
 \arguments{
 \item{x}{training predictors}
