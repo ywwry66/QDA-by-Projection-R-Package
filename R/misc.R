@@ -1,13 +1,15 @@
-sqrtinvm <- function(x) {
-    ei <- eigen(x, symmetric = TRUE)
-    ei$vector %*% diag(1 / sqrt(ei$value)) %*% solve(ei$vector)
-}
-
+##' Maximizing the ratio of two full rank quadratic forms
+##'
+##' Find the direction `a' that maximizes (t(a) %*% sigma0 %*% a)/(t(a) %*% sigma1 %*% a)
+##' @title Maximizing the ratio of two full rank quadratic forms
+##' @param sigma0 The matrix which determines the top full rank quadratic form
+##' @param sigma1 The matrix which determines the bottom full rank quadratic form
+##' @return
+##' @author Ruiyang Wu
 maxquadratio <- function(sigma0, sigma1) {
-    s1 <- sqrtinvm(sigma1)
-    arg <- as.vector(solve(s1) %*% eigen(s1 %*% sigma0 %*% s1)$vectors[, 1])
-    arg <- arg / sqrt(sum(arg^2))
-    value <- (arg %*% sigma0 %*% arg) / (arg %*% sigma1 %*% arg)
+    ei <- eigen(solve(sigma1) %*% sigma0, symmetric = TRUE)
+    arg <- as.vector(ei$vectors[, 1])
+    value <- ei$values[1]
     return(list(arg = arg, value = value))
 }
 
