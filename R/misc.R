@@ -23,9 +23,6 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
         stop("Wrong method")
     p <- length(mu0)
     a <- rep(0, p)
-    const <- function(a) sum(a^2) - 1
-    target <- function(a) mis_rate(a, mu0, mu1, sigma0, sigma1) +
-                              lambda * sum(abs(a))
     if (is_invertible(sigma))
         par0 <- solve(sigma) %*% (mu0 - mu1)
     if (is_invertible(sigma0) & is_invertible(sigma1)) {
@@ -53,12 +50,14 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
         d <- op$par
         conv <- op$convergence
     } else{
-        op <- nloptr(x0 = par0, eval_f = target, eval_g_eq = const,
+        const <- function(a) sum(a^2) - 1
+        target <- function(a) mis_rate(a, mu0, mu1, sigma0, sigma1) +
+                                  lambda * sum(abs(a))
+        op <- nloptr::nloptr(x0 = par0, eval_f = target, eval_g_eq = const,
                      opts = list("algorithm" = "NLOPT_GN_ISRES",
                                  "maxeval" = 300000),
                      lb = rep(-1, p), ub = rep(1, p))
         d <- op$solution
-        print(op)
         conv <- op$status
     }
     a <- d / sqrt(sum(d^2))
