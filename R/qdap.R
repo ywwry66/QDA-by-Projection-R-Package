@@ -1,6 +1,6 @@
 drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                       lambda = 0, method = "Penalization",
-                      optim = "BFGS") {
+                      optim = "codesc") {
     ## initialization
     if (method != "Penalization" & method != "Thresholding")
         stop("Wrong method")
@@ -57,7 +57,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 
 drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                 iter = 1, lambda = 0, method = "Penalization",
-                optim = "BFGS") {
+                optim = "codesc") {
     if (iter > 1 & lambda == 0) {
         p <- length(mu0)
         a <- matrix(0, p, iter)
@@ -97,7 +97,7 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 ##' @export
 
 qdap <- function(x, y, xnew, lambda = 0, iter = 1,
-                 method = "Penalization", optim = "BFGS") {
+                 method = "Penalization", optim = "codesc") {
     x <- data.matrix(x)
     xnew <- data.matrix(xnew)
     x0 <- x[which(y == 0), ]
