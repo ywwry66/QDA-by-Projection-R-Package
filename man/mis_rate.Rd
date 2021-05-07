@@ -4,7 +4,7 @@
 \alias{mis_rate}
 \title{mis_rate function}
 \usage{
-mis_rate(a, mu0, mu1, sigma0, sigma1)
+mis_rate(a, mu0, mu1, sigma0, sigma1, p0, p1)
 }
 \arguments{
 \item{a}{direction}
