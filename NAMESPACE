@@ -3,5 +3,6 @@
 export(codesc)
 export(codesc_test)
 export(codesc_test_summary)
+export(k_qdap)
 export(mis_rate)
 export(qdap)
