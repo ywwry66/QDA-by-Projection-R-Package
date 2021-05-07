@@ -22,8 +22,6 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma,
         stop("Wrong method")
     p <- length(mu0)
     a <- rep(0, p)
-    a0 <- ginv(sigma) %*% (mu0 - mu1)
-    a0 <- a0 / sqrt(sum(a0^2))
     const <- function(a) sum(a^2) - 1
     target <- function(a) mis_rate(a, mu0, mu1, sigma0, sigma1) +
                               lambda * sum(abs(a))
