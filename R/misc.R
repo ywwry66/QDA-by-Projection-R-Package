@@ -26,6 +26,16 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
     const <- function(a) sum(a^2) - 1
     target <- function(a) mis_rate(a, mu0, mu1, sigma0, sigma1) +
                               lambda * sum(abs(a))
+    if (is_invertible(sigma))
+        par0 <- solve(sigma) %*% (mu0 - mu1)
+    if (is_invertible(sigma0) & is_invertible(sigma1)) {
+        m0 <- maxquadratio(sigma0, sigma1); m1 <- maxquadratio(sigma1, sigma0)
+        par1 <- if (m0$value > m1$value) m0$arg else m1$arg
+    }
+    if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
+        mis_rate(par0, mu0, mu1, sigma0, sigma1, p0, p1))
+        par0 <- par1
+    par0 <- par0 / sqrt(sum(par0^2))
     ## optimization wrt lda direction as initial
     if (lambda == 0 | method == "Thresholding") {
         if (optim == "BFGS")
@@ -43,35 +53,13 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
         d <- op$par
         conv <- op$convergence
     } else{
-        op <- nloptr(x0 = a0, eval_f = target, eval_g_eq = const,
+        op <- nloptr(x0 = par0, eval_f = target, eval_g_eq = const,
                      opts = list("algorithm" = "NLOPT_GN_ISRES",
                                  "maxeval" = 300000),
                      lb = rep(-1, p), ub = rep(1, p))
         d <- op$solution
         print(op)
         conv <- op$status
-    }
-    ## optimization wrt another possible initial direction
-    if (is_invertible(sigma0) & is_invertible(sigma1)) {
-        m0 <- maxquadratio(sigma0, sigma1); m1 <- maxquadratio(sigma1, sigma0)
-        if (m0$value > m1$value) a0 <- m0$arg else a0 <- m1$arg
-        if (lambda == 0 | method == "Thresholding") {
-            op1 <- optim(par = a0, fn = mis_rate, method = "BFGS",
-                         mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1)
-            if (op1$value < op$value) {
-                d <- op1$par
-                conv <- op1$convergence
-            }
-        } else {
-            op1 <- nloptr(x0 = a0, eval_f = target, eval_g_eq = const,
-                          opts = list("algorithm" = "NLOPT_GN_ISRES",
-                                      "maxeval" = 300000),
-                          lb = rep(-1, p), ub = rep(1, p))
-            if (op1$objective < op$objective) {
-                d <- op1$solution
-                conv <- op1$status
-            }
-        }
     }
     a <- d / sqrt(sum(d^2))
     if (method == "Thresholding" & lambda != 0) {
