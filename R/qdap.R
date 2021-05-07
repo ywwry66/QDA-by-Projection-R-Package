@@ -36,7 +36,6 @@ qdap <- function(x, y, xnew, lambda = 0, iter = 1,
     drt <- drt(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                iter, lambda, method, optim)
     a <- drt$a
-    ## print(a)
     conv <- drt$conv
     ## 1D qda
     x <- as.vector(x %*% a)
