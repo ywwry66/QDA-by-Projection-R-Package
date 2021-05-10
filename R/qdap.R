@@ -96,10 +96,9 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 ##' @author Ruiyang Wu
 ##' @export
 
-qdap <- function(x, y, xnew, lambda = 0, iter = 1,
+qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
                  method = "Penalization", optim = "codesc") {
     x <- data.matrix(x)
-    xnew <- data.matrix(xnew)
     x0 <- x[which(y == 0), ]
     x1 <- x[which(y == 1), ]
     n0 <- nrow(x0)
@@ -133,9 +132,14 @@ qdap <- function(x, y, xnew, lambda = 0, iter = 1,
     c1 <- -2 * (mu0 / sigma0 - mu1 / sigma1)
     c0 <- mu0 ^ 2 / sigma0 - mu1 ^ 2 / sigma1 + log(sigma0 / sigma1) -
         2 * log(p0 / p1)
-    qda_rule <- function(xnew) as.integer(c2 * xnew ^ 2 + c1 * xnew + c0 > 0)
-    ynew <- sapply(as.vector(xnew %*% a), FUN = qda_rule)
-    return(list(class = ynew, drt = a, conv = conv))
+    qdap_rule <- function(xnew)
+        as.integer(c2 * (xnew %*% a) ^ 2 + c1 * (xnew %*% a) + c0 > 0)
+    if (!is.null(xnew)) {
+        xnew <- data.matrix(xnew)
+        ynew <- apply(xnew, MARGIN = 1, FUN = qdap_rule)
+        return(list(class = ynew, qdap_rule = qdap_rule, drt = a, conv = conv))
+    } else
+        return(list(qdap_rule = qdap_rule, drt = a, conv = conv))
 }
 
 ## mylda <- function(x, y, xnew) {
