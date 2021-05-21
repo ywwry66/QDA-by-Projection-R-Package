@@ -1,4 +1,4 @@
-codesc_1d <- function(fun, par, grad_size = 10e-8, hess_size = 10e-6,
+codesc_1d <- function(fun, par, grad_size = 1e-7, hess_size = 1e-5,
                       step_size = 0.1) {
     grad <- (fun(par + grad_size) - fun(par)) / grad_size
     grad1 <-
@@ -14,7 +14,7 @@ codesc_1d <- function(fun, par, grad_size = 10e-8, hess_size = 10e-6,
         return(par - grad / hess)
 }
 
-codesc_1d_2 <- function(fun, par, hess_size = 10e-6, step_size = 0.1) {
+codesc_1d_2 <- function(fun, par, hess_size = 1e-5, step_size = 0.1) {
     y0 <- fun(par - hess_size)
     y1 <- fun(par)
     y2 <- fun(par + hess_size)
@@ -49,7 +49,7 @@ codesc_1iter <- function(fun, par, method = 2, step_size = 0.1) {
 
 ##' @export
 codesc <- function(fun, par, method = 2, max_iter = 500,
-                   reltol = 10e-8, abstol = 10e-10, step_size = 0.1, ...) {
+                   reltol = 1e-7, abstol = 1e-9, step_size = 0.1, ...) {
     fun1 <- function(a) fun(a, ...)
     convergence <- 1
     par <- par / sqrt(sum(par ^ 2))
@@ -68,7 +68,7 @@ codesc <- function(fun, par, method = 2, max_iter = 500,
     return(list(par = par, value = value[i + 1], iters = i, convergence = convergence))
 }
 
-frank_wolfe_1iter <- function(fun, par, step_size, grad_size = 10e-8) {
+frank_wolfe_1iter <- function(fun, par, step_size, grad_size = 1e-7) {
     grad <- numeric(length(par))
     for (i in seq_along(par)) {
         temp <- par
@@ -81,7 +81,7 @@ frank_wolfe_1iter <- function(fun, par, step_size, grad_size = 10e-8) {
 }
 
 frank_wolfe <- function(fun, par, max_iter = 500,
-                        reltol = 10e-8, abstol = 10e-10, ...) {
+                        reltol = 1e-7, abstol = 1e-9, ...) {
     fun1 <- function(a) fun(a, ...)
     convergence <- 1
     par <- par / sqrt(sum(par ^ 2))

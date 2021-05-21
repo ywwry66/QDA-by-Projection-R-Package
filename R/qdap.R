@@ -111,9 +111,9 @@ qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
     sigma0 <- cov(x0)
     sigma1 <- cov(x1)
     if (!is_invertible(sigma0))
-        sigma0 <- sigma0 + diag(10e-7, p)
+        sigma0 <- sigma0 + diag(1e-6, p)
     if (!is_invertible(sigma1))
-        sigma1 <- sigma1 + diag(10e-7, p)
+        sigma1 <- sigma1 + diag(1e-6, p)
     sigma <- ((n0 - 1) * sigma0 + (n1 - 1) * sigma1) /
         (n0 + n1 - 2)
     drt <- drt(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
