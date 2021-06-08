@@ -1,20 +1,4 @@
-codesc_1d <- function(fun, par, grad_size = 1e-7, hess_size = 1e-5,
-                      step_size = 0.1) {
-    grad <- (fun(par + grad_size) - fun(par)) / grad_size
-    grad1 <-
-        (fun(par + hess_size + grad_size) - fun(par + hess_size)) / grad_size
-    hess <- (grad1 - grad) / hess_size
-    if (hess < 0 || hess == 0) {
-        ## print("negative")
-        ## return(par - grad / (2 * hess))
-        return(par - sign(grad) * step_size)
-        ## return(par)
-        }
-    else
-        return(par - grad / hess)
-}
-
-codesc_1d_2 <- function(fun, par, hess_size = 1e-5, step_size = 0.1) {
+codesc_1d <- function(fun, par, hess_size = 1e-5, step_size = 0.1) {
     y0 <- fun(par - hess_size)
     y1 <- fun(par)
     y2 <- fun(par + hess_size)
@@ -31,15 +15,14 @@ codesc_1d_2 <- function(fun, par, hess_size = 1e-5, step_size = 0.1) {
         return(-fst_coef / (2 * sec_coef))
 }
 
-codesc_1iter <- function(fun, par, method = 2, step_size = 0.1) {
+codesc_1iter <- function(fun, par, step_size = 0.1) {
     for (i in seq_along(par)) {
         ## value_old <- fun(par)
         f <- function(x) {
             par[i] <- x
             fun(par)
         }
-        par[i] <- if (method == 1) codesc_1d(f, par[i], step_size = step_size)
-                  else codesc_1d_2(f, par[i], step_size = step_size)
+        par[i] <- codesc_1d(f, par[i], step_size = step_size)
         ## value_new <- fun(par)
         ## if (value_new > value_old) print(1)
     }
@@ -48,7 +31,7 @@ codesc_1iter <- function(fun, par, method = 2, step_size = 0.1) {
 }
 
 ##' @export
-codesc <- function(fun, par, method = 2, max_iter = 500,
+codesc <- function(fun, par, max_iter = 500,
                    reltol = 1e-7, abstol = 1e-9, step_size = 0.1, ...) {
     fun1 <- function(a) fun(a, ...)
     convergence <- 1
@@ -58,14 +41,16 @@ codesc <- function(fun, par, method = 2, max_iter = 500,
     if (value[1] < abstol)
         return(list(par = par, value = value[1], iters = 0, convergence = 0))
     for (i in seq_len(max_iter)) {
-        par <- codesc_1iter(fun1, par, method, step_size)
+        par <- codesc_1iter(fun1, par, step_size)
         value[i + 1] <- fun1(par)
-        if (abs(value[i] - value[i + 1]) < max(abstol, reltol * abs(value[i]))) {
+        if (abs(value[i] - value[i + 1]) <
+            max(abstol, reltol * abs(value[i]))) {
             convergence <- 0
             break
         }
     }
-    return(list(par = par, value = value[i + 1], iters = i, convergence = convergence))
+    return(list(par = par, value = value[i + 1],
+                iters = i, convergence = convergence))
 }
 
 frank_wolfe_1iter <- function(fun, par, step_size, grad_size = 1e-7) {
