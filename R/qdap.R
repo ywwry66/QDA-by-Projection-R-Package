@@ -1,33 +1,34 @@
 drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                       lambda = 0, method = "Penalization",
-                      optim = "codesc") {
+                      par = NULL, optim = "codesc") {
     ## initialization
     if (method != "Penalization" & method != "Thresholding")
         stop("Wrong method")
     p <- length(mu0)
     a <- rep(0, p)
-    if (is_invertible(sigma))
-        par0 <- solve(sigma) %*% (mu0 - mu1)
-    if (is_invertible(sigma0) & is_invertible(sigma1)) {
+    if (par == "NULL") {
+        ## equal covariance
+        par <- solve(sigma) %*% (mu0 - mu1)
+        ## equal mean
         m0 <- maxquadratio(sigma0, sigma1); m1 <- maxquadratio(sigma1, sigma0)
         par1 <- if (m0$value > m1$value) m0$arg else m1$arg
+        if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
+            mis_rate(par, mu0, mu1, sigma0, sigma1, p0, p1))
+            par <- par1
     }
-    if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
-        mis_rate(par0, mu0, mu1, sigma0, sigma1, p0, p1))
-        par0 <- par1
-    par0 <- par0 / sqrt(sum(par0^2))
+    par <- par / sqrt(sum(par^2))
     ## optimization wrt lda direction as initial
     if (lambda == 0 | method == "Thresholding") {
         if (optim == "BFGS")
-            op <- optim(par = par0, fn = mis_rate, method = "BFGS",
+            op <- optim(par = par, fn = mis_rate, method = "BFGS",
                         mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                         p0 = p0, p1 = p1, control = list(maxit = 1000))
         else if (optim == "codesc")
-            op <- codesc(par = par0, fun = mis_rate, max_iter = 1000,
+            op <- codesc(par = par, fun = mis_rate, max_iter = 1000,
                          mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                          p0 = p0, p1 = p1, step_size = 0.1)
         else if (optim == "frank_wolfe")
-            op <- frank_wolfe(par = par0, fun = mis_rate, max_iter = 500,
+            op <- frank_wolfe(par = par, fun = mis_rate, max_iter = 500,
                               mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                               p0 = p0, p1 = p1)
         else
