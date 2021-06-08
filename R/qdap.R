@@ -6,7 +6,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
         stop("Wrong method")
     p <- length(mu0)
     a <- rep(0, p)
-    if (par == "NULL") {
+    if (is.null(par)) {
         ## equal covariance
         par <- solve(sigma) %*% (mu0 - mu1)
         ## equal mean
@@ -17,37 +17,24 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
             par <- par1
     }
     par <- par / sqrt(sum(par^2))
-    ## optimization wrt lda direction as initial
-    if (lambda == 0 | method == "Thresholding") {
-        if (optim == "BFGS")
-            op <- optim(par = par, fn = mis_rate, method = "BFGS",
-                        mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
-                        p0 = p0, p1 = p1, control = list(maxit = 1000))
-        else if (optim == "codesc")
-            op <- codesc(par = par, fun = mis_rate, max_iter = 1000,
-                         mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
-                         p0 = p0, p1 = p1, step_size = 0.1)
-        else if (optim == "frank_wolfe")
-            op <- frank_wolfe(par = par, fun = mis_rate, max_iter = 500,
-                              mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
-                              p0 = p0, p1 = p1)
-        else
-            stop("Wrong optimization method")
-        ## print(op)
-        d <- op$par
-        conv <- op$convergence
-    } else{
-        const <- function(a) sum(a^2) - 1
-        target <- function(a) mis_rate(a, mu0, mu1, sigma0, sigma1) +
-                                  lambda * sum(abs(a))
-        op <- nloptr::nloptr(x0 = par0, eval_f = target, eval_g_eq = const,
-                     opts = list("algorithm" = "NLOPT_GN_ISRES",
-                                 "maxeval" = 300000),
-                     lb = rep(-1, p), ub = rep(1, p))
-        ## print(op)
-        d <- op$solution
-        conv <- op$status
-    }
+    ## optimization using specified method
+    if (optim == "BFGS")
+        op <- optim(par = par, fn = mis_rate, method = "BFGS",
+                    mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
+                    p0 = p0, p1 = p1, control = list(maxit = 1000))
+    else if (optim == "codesc")
+        op <- codesc(par = par, fun = mis_rate, max_iter = 1000,
+                     mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
+                     p0 = p0, p1 = p1, step_size = 0.1)
+    else if (optim == "frank_wolfe")
+        op <- frank_wolfe(par = par, fun = mis_rate, max_iter = 500,
+                          mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
+                          p0 = p0, p1 = p1)
+    else
+        stop("Wrong optimization method")
+    ## print(op)
+    d <- op$par
+    conv <- op$convergence
     a <- d / sqrt(sum(d^2))
     if (method == "Thresholding" & lambda != 0) {
         a[which(abs(a) < lambda)] <- 0
