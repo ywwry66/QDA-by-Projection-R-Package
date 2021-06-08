@@ -132,6 +132,8 @@ qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
         return(list(qdap_rule = qdap_rule, drt = a, conv = conv))
 }
 
+##' @export
+
 qdap_cv <- function(x, y, xnew = NULL, lambda = c(1, 2, 4, 8, 16),
                     method = "Penalization", optim = "codesc",
                     folds = 5, seed = 2020) {
