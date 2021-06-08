@@ -132,6 +132,44 @@ qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
         return(list(qdap_rule = qdap_rule, drt = a, conv = conv))
 }
 
+qdap_cv <- function(x, y, xnew = NULL, lambda = c(1, 2, 4, 8, 16),
+                    method = "Penalization", optim = "codesc",
+                    folds = 5, seed = 2020) {
+    x <- data.matrix(x)
+    x0 <- x[which(y == 0), ]
+    x1 <- x[which(y == 1), ]
+    n0 <- nrow(x0)
+    n1 <- nrow(x1)
+    x0 <- x0[sample(n0), ]
+    x1 <- x1[sample(n1), ]
+    folds0 <- cut(seq_len(n0), breaks = folds, labels = FALSE)
+    folds1 <- cut(seq_len(n1), breaks = folds, labels = FALSE)
+    pred_err <- rep(0, length(lambda))
+    for (j in seq_len(lambda)) {
+        for (i in seq_len(folds)) {
+            test_ind0 <- which(folds0 == i)
+            test_ind1 <- which(folds1 == i)
+            test_n0 <- length(test_ind0)
+            test_n1 <- length(test_ind1)
+            ypred <-
+                qdap(x = rbind(x0[-ind0, ], x1[-ind1, ]),
+                     y = c(rep(0, n0 - test_n0),
+                           rep(1, n1 - test_n1)),
+                     xnew = rbind(x0[ind0, ], x1[ind1, ]),
+                     lambda = lambda[j],
+                     method = method,
+                     optim = optim)$class
+            pred_err[j] <- pred_err[j] +
+                sum(ypred != c(rep(0, test_n0), rep(0, test_n1)))
+        }
+    }
+    lambda_best <- lambda[which.min(pred_err)]
+    return(qdap(x, y, xnew,
+                lambda = lambda_best,
+                method = method,
+                optim = optim))
+}
+
 ## mylda <- function(x, y, xnew) {
 ##     x <- data.matrix(x)
 ##     xnew <- data.matrix(xnew)
