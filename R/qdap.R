@@ -26,10 +26,12 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
             op <- codesc(par = par0, fun = mis_rate, max_iter = 1000,
                          mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                          p0 = p0, p1 = p1, step_size = 0.1)
-        else
+        else if (optim == "frank_wolfe")
             op <- frank_wolfe(par = par0, fun = mis_rate, max_iter = 500,
                               mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                               p0 = p0, p1 = p1)
+        else
+            stop("Wrong optimization method")
         ## print(op)
         d <- op$par
         conv <- op$convergence
