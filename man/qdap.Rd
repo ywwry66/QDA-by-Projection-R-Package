@@ -7,7 +7,7 @@
 qdap(
   x,
   y,
-  xnew,
+  xnew = NULL,
   lambda = 0,
   iter = 1,
   method = "Penalization",
