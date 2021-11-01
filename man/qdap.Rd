@@ -2,7 +2,7 @@
 % Please edit documentation in R/qdap.R
 \name{qdap}
 \alias{qdap}
-\title{qdap}
+\title{Qdadratic Discriminant Analysis by Projection.}
 \usage{
 qdap(
   x,
@@ -15,23 +15,25 @@ qdap(
 )
 }
 \arguments{
-\item{x}{training predictors}
+\item{x}{A matrix containing the predictors of the training data.}
 
-\item{y}{training labels}
+\item{y}{A vector containing the class labels of the training data.}
 
-\item{xnew}{test predictors}
+\item{xnew}{A matrix containing the predictors of the test data.}
 
-\item{lambda}{}
+\item{lambda}{The tuning variable used for either the "Penalization" method or the "Thresholding" method.}
 
-\item{iter}{number of iterations}
+\item{iter}{Number of iterations to apply QDAP. If greater than 1, this will keep searching the optimal direction in the orthogonal complement of the previous optimal subspace. (Beta)}
 
-\item{method}{}
+\item{method}{A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, "Thresholding" for thresholding over each entry of the optimal direction. (Beta)}
+
+\item{optim}{The optimization method used for the misclassification function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, "codesc" for coordinate descent algorithm.}
 }
 \value{
 a list of the predicted labels, optimal direction and convergence status
 }
 \description{
-This function executes the QDA by Projection method
+This function runs the Quadratic Discriminant Analysis by Projection (QDAP) method.
 }
 \details{
 Place holder

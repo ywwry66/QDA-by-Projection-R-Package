@@ -82,16 +82,17 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                          lambda, method, optim))
 }
 
-##' This function executes the QDA by Projection method
+##' This function runs the Quadratic Discriminant Analysis by Projection (QDAP) method.
 ##'
 ##' Place holder
-##' @title qdap
-##' @param x training predictors
-##' @param y training labels
-##' @param xnew test predictors
-##' @param lambda 
-##' @param iter number of iterations
-##' @param method 
+##' @title Qdadratic Discriminant Analysis by Projection.
+##' @param x A matrix containing the predictors of the training data.
+##' @param y A vector containing the class labels of the training data.
+##' @param xnew A matrix containing the predictors of the test data.
+##' @param lambda The tuning variable used for either the "Penalization" method or the "Thresholding" method.
+##' @param iter Number of iterations to apply QDAP. If greater than 1, this will keep searching the optimal direction in the orthogonal complement of the previous optimal subspace. (Beta)
+##' @param method A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, "Thresholding" for thresholding over each entry of the optimal direction. (Beta)
+##' @param optim The optimization method used for the misclassification function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, "codesc" for coordinate descent algorithm.
 ##' @return a list of the predicted labels, optimal direction and convergence status
 ##' @author Ruiyang Wu
 ##' @export
