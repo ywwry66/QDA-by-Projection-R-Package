@@ -3,7 +3,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                       optim = "codesc") {
     ## initialization
     if (method != "Penalization" & method != "Thresholding")
-        stop("Wrong method")
+        stop("Wrong sparse method")
     p <- length(mu0)
     a <- rep(0, p)
     if (is_invertible(sigma))
@@ -27,10 +27,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                          mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
                          p0 = p0, p1 = p1, step_size = 0.1)
         else
-            op <- frank_wolfe(par = par0, fun = mis_rate, max_iter = 500,
-                              mu0 = mu0, mu1 = mu1, sigma0 = sigma0, sigma1 = sigma1,
-                              p0 = p0, p1 = p1)
-        ## print(op)
+            stop("Wrong optimization method")
         d <- op$par
         conv <- op$convergence
     } else{
@@ -41,7 +38,6 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                      opts = list("algorithm" = "NLOPT_GN_ISRES",
                                  "maxeval" = 300000),
                      lb = rep(-1, p), ub = rep(1, p))
-        ## print(op)
         d <- op$solution
         conv <- op$status
     }
