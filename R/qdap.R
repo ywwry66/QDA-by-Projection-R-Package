@@ -141,24 +141,3 @@ qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
     } else
         return(list(qdap_rule = qdap_rule, drt = a, conv = conv))
 }
-
-## mylda <- function(x, y, xnew) {
-##     x <- data.matrix(x)
-##     xnew <- data.matrix(xnew)
-##     x0 <- as.matrix(x[which(y == 0), ])
-##     x1 <- as.matrix(x[which(y == 1), ])
-##     p <- ncol(x)
-##     n0 <- nrow(x0)
-##     n1 <- nrow(x1)
-##     mu0 <- colMeans(x0)
-##     mu1 <- colMeans(x1)
-##     sigma0 <- cov(x0)
-##     sigma1 <- cov(x1)
-##     sigma <- ((n0 - 1) * sigma0 + (n1 - 1) * sigma1) /
-##         (n0 + n1 - 2)
-##     a0 <- solve(sigma + diag(0.0000001, p)) %*% (mu1 - mu0)
-##     if (p == 1) a0 <- solve(sigma) %*% (mu1 - mu0)
-##     pred <- function(xnew) xnew %*% a0 > (mu0 + mu1) %*% a0 / 2 - log(n1 / n0)
-##     ynew <- apply(xnew, MARGIN = 1, FUN = pred)
-##     return(list(class = ynew))
-## }
