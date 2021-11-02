@@ -1,20 +1,18 @@
-drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
+drt_1iter <- function(mu0, mu1, sigma0, sigma1, xc, p0, p1,
                       lambda = 0, method = "Penalization",
                       optim = "codesc") {
     ## initialization
     if (method != "Penalization" & method != "Thresholding")
         stop("Wrong sparse method")
-    p <- length(mu0)
-    a <- rep(0, p)
-    if (is_invertible(sigma))
-        par0 <- solve(sigma) %*% (mu0 - mu1)
+    par0 <- prec(xc, df = nrow(xc) - 2) %*% (mu0 - mu1)
     if (is_invertible(sigma0) & is_invertible(sigma1)) {
-        m0 <- maxquadratio(sigma0, sigma1); m1 <- maxquadratio(sigma1, sigma0)
+        m0 <- maxquadratio(sigma0, sigma1)
+        m1 <- maxquadratio(sigma1, sigma0)
         par1 <- if (m0$value > m1$value) m0$arg else m1$arg
+        if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
+            mis_rate(par0, mu0, mu1, sigma0, sigma1, p0, p1))
+            par0 <- par1
     }
-    if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
-        mis_rate(par0, mu0, mu1, sigma0, sigma1, p0, p1))
-        par0 <- par1
     par0 <- par0 / sqrt(sum(par0^2))
     ## optimization wrt lda direction as initial
     if (lambda == 0 | method == "Thresholding") {
@@ -51,14 +49,14 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
     return(list(a = a, conv = conv))
 }
 
-drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
+drt <- function(mu0, mu1, sigma0, sigma1, xc, p0, p1,
                 iter = 1, lambda = 0, method = "Penalization",
                 optim = "codesc") {
     if (iter > 1 & lambda == 0) {
         p <- length(mu0)
         a <- matrix(0, p, iter)
         conv <- rep(0, iter)
-        drt <- drt_1iter(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
+        drt <- drt_1iter(mu0, mu1, sigma0, sigma1, xc, p0, p1,
                          lambda, method, optim)
         a[, 1] <- drt$a
         conv[1] <- drt$conv
@@ -67,14 +65,14 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
             drt <- drt_1iter(mu0 = t(Q) %*% mu0, mu1 = t(Q) %*% mu1,
                              sigma0 = t(Q) %*% sigma0 %*% Q,
                              sigma1 = t(Q) %*% sigma1 %*% Q,
-                             p0, p1, lambda, method, optim)
+                             xc %*% Q, p0, p1, lambda, method, optim)
             d <- Q %*% drt$a
             a[, j] <- d / sqrt(sum(d^2))
             conv[j] <- drt$conv
         }
         return(list(a = a, conv = conv))
     } else
-        return(drt_1iter(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
+        return(drt_1iter(mu0, mu1, sigma0, sigma1, xc, p0, p1,
                          lambda, method, optim))
 }
 
@@ -133,9 +131,8 @@ qdap <- function(x, y, xnew = NULL, lambda = 0, iter = 1,
         sigma0 <- sigma0 + diag(1e-6, p)
     if (!is_invertible(sigma1))
         sigma1 <- sigma1 + diag(1e-6, p)
-    sigma <- ((n0 - 1) * sigma0 + (n1 - 1) * sigma1) /
-        (n0 + n1 - 2)
-    drt <- drt(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
+    xc <- rbind(scale(x0, scale = FALSE), scale(x1, scale = FALSE))
+    drt <- drt(mu0, mu1, sigma0, sigma1, xc, p0, p1,
                iter, lambda, method, optim)
     a <- drt$a
     conv <- drt$conv
