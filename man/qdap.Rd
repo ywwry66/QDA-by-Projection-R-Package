@@ -42,7 +42,13 @@ This function runs the Quadratic Discriminant Analysis by Projection (QDAP) meth
 \details{
 This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
 
-Place holder
+The initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
+
+If the covariance matrices are singular, a tiny scalar matrix is added to them for numerical stability.
+
+Multiple rounds of applications of QDAP is implemented (still in beta status). See the argument 'iter'.
+
+Penalization/Thresholding is implemented to find sparse optimal direction (still in beta status). See the arguments 'lambda' and 'method'.
 }
 \examples{
 Iris <- iris[-which(iris$Species == "virginica")] # use the first two species only

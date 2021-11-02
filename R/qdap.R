@@ -82,7 +82,13 @@ drt <- function(mu0, mu1, sigma0, sigma1, xc, p0, p1,
 ##'
 ##' This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
 ##'
-##' Place holder
+##' The initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
+##'
+##' If the covariance matrices are singular, a tiny scalar matrix is added to them for numerical stability.
+##'
+##' Multiple rounds of applications of QDAP is implemented (still in beta status). See the argument 'iter'.
+##'
+##' Penalization/Thresholding is implemented to find sparse optimal direction (still in beta status). See the arguments 'lambda' and 'method'.
 ##'
 ##' @param x A matrix containing the predictors of the training data.
 ##' @param y A 0-1 vector containing the class labels of the training data.
