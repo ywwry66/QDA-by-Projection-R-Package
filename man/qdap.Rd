@@ -2,7 +2,7 @@
 % Please edit documentation in R/qdap.R
 \name{qdap}
 \alias{qdap}
-\title{Qdadratic Discriminant Analysis by Projection.}
+\title{Qdadratic Discriminant Analysis by Projection}
 \usage{
 qdap(
   x,
@@ -17,27 +17,46 @@ qdap(
 \arguments{
 \item{x}{A matrix containing the predictors of the training data.}
 
-\item{y}{A vector containing the class labels of the training data.}
+\item{y}{A 0-1 vector containing the class labels of the training data.}
 
 \item{xnew}{A matrix containing the predictors of the test data.}
 
-\item{lambda}{The tuning variable used for either the "Penalization" method or the "Thresholding" method.}
+\item{lambda}{The tuning parameter used for either the "Penalization" method or the "Thresholding" method. (Beta)}
 
 \item{iter}{Number of iterations to apply QDAP. If greater than 1, this will keep searching the optimal direction in the orthogonal complement of the previous optimal subspace. (Beta)}
 
-\item{method}{A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, "Thresholding" for thresholding over each entry of the optimal direction. (Beta)}
+\item{method}{A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, or "Thresholding" for thresholding over each entry of the optimal direction. (Beta)}
 
-\item{optim}{The optimization method used for the misclassification function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, "codesc" for coordinate descent algorithm.}
+\item{optim}{The optimization method used towards the classification error function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, or "codesc" for coordinate descent algorithm.}
 }
 \value{
-a list of the predicted labels, optimal direction and convergence status
+If 'xnew' is not supplied, the return value is a list containing 'qdap_rule', 'drt' and 'conv'. If 'xnew' is supplied, in addition to these, it also contains 'class':
+\item{class}{A 0-1 vector containing the predicted class label of the test data 'xnew'.}
+\item{qdap_rule}{The QDAP classification rule, a function that takes a vector of the same dimension as each training sample, and returns the predicted class label.}
+\item{drt}{a vector representing the optimal direction to project data onto.}
+\item{conv}{An integer code. ‘0’ indicates successful completion of the optimization method.}
 }
 \description{
 This function runs the Quadratic Discriminant Analysis by Projection (QDAP) method.
 }
 \details{
+This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
+
 Place holder
 }
-\author{
-Ruiyang Wu
+\examples{
+Iris <- iris[-which(iris$Species == "virginica")] # use the first two species only
+
+## Set up training and test data
+set.seed(2021)
+n <- nrow(Iris)
+train <- sample(1:n, n/2)
+x <- Iris[train, 1:4]
+y <- as.integer(Iris[train, 5] == "setosa")
+xnew <- Iris[-train, 1:4]
+ynew <- as.integer(Iris[-train, 5] == "setosa")
+
+## Calculate classification error
+fit <- qdap(x, y, xnew)
+sum(fit$class != ynew)/length(ynew)
 }
