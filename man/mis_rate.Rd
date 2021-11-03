@@ -2,30 +2,27 @@
 % Please edit documentation in R/mis_rate.R
 \name{mis_rate}
 \alias{mis_rate}
-\title{mis_rate function}
+\title{Classification Error for Heteroscedastic Gaussian Models after 1-D Projection}
 \usage{
 mis_rate(a, mu0, mu1, sigma0, sigma1, p0, p1)
 }
 \arguments{
-\item{a}{direction}
+\item{a}{A vector representing the direction of projection.}
 
-\item{mu0}{mean of class 0}
+\item{mu0}{A vector representing the mean of class 0}
 
-\item{mu1}{mean of class 1}
+\item{mu1}{A vector representing the mean of class 1}
 
-\item{sigma0}{covariance matrix of class 0}
+\item{sigma0}{An intertible matrix representing the covariance matrix of class 0}
 
-\item{sigma1}{covariance matrix of class 1}
+\item{sigma1}{An invertible matrix representing the covariance matrix of class 1}
 }
 \value{
-classification error
+The return value is the classification error/misclassification rate of the two-class heteroscedastic Gaussian model, whose class means are 'mu0' and 'mu1' and class covariance matrices are 'sigma0' and 'sigma1', after 1-D projection onto the direction 'a'.
 }
 \description{
-This is the classification error/misclassification error function
+This function computes the population classification error/misclassification rate for heteroscedastic Gaussian models after 1-D projection, given means and covariances of the model and the direction of projection.
 }
 \details{
-Place holder
-}
-\author{
-Ruiyang Wu
+This function only handles two-class heteroscedastic Gaussian models.
 }

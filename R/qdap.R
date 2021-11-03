@@ -80,7 +80,7 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 ##'
 ##' This function runs the Quadratic Discriminant Analysis by Projection (QDAP) method.
 ##'
-##' This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
+##' This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the heteroscedastic Gaussian assumption. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
 ##'
 ##' If not specified by the user, the initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
 ##'
