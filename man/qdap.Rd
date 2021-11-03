@@ -11,6 +11,8 @@ qdap(
   lambda = 0,
   iter = 1,
   method = "Penalization",
+  par = NULL,
+  max_iter = 1000,
   optim = "codesc"
 )
 }
