@@ -2,3 +2,22 @@
 This is the R package of *QDA by Projection* project.
 
 Reference: [[https://arxiv.org/abs/2108.09005][arXiv]].
+** Installation
+If you have =devtools= package installed, you can use a single command
+in R:
+#+begin_src R
+  devtools::install_github(“ywwry66/QDA-by-Projection-R-Package”)
+#+end_src
+
+Otherwise, you should download the versioned tarball under Releases -
+Assets, and install it with
+#+begin_src R
+  install.packages()
+#+end_src
+** Documentation
+The main function for the package is =QDAP::qdap=. For documentation, in an
+R session, enter
+#+begin_src R
+  library(QDAP)
+  ?qdap
+#+end_src
