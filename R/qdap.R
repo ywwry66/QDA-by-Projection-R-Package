@@ -10,7 +10,8 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
         ## equal covariance
         par <- solve(sigma) %*% (mu0 - mu1)
         ## equal mean
-        m0 <- maxquadratio(sigma0, sigma1); m1 <- maxquadratio(sigma1, sigma0)
+        m0 <- maxquadratio(sigma0, sigma1)
+        m1 <- maxquadratio(sigma1, sigma0)
         par1 <- if (m0$value > m1$value) m0$arg else m1$arg
         if (mis_rate(par1, mu0, mu1, sigma0, sigma1, p0, p1) <
             mis_rate(par, mu0, mu1, sigma0, sigma1, p0, p1))
