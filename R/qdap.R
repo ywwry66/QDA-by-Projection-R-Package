@@ -61,6 +61,7 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
             drt <- drt_1iter(mu0 = t(Q) %*% mu0, mu1 = t(Q) %*% mu1,
                              sigma0 = t(Q) %*% sigma0 %*% Q,
                              sigma1 = t(Q) %*% sigma1 %*% Q,
+                             sigma = t(Q) %*% sigma %*% Q,
                              p0, p1, lambda = lambda, method = method,
                              par = par, max_iter = max_iter, optim = optim)
             d <- Q %*% drt$a
