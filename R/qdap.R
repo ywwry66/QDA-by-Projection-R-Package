@@ -103,7 +103,7 @@ drt <- function(mu0, mu1, sigma0, sigma1, xc, p0, p1,
 ##' \item{drt}{a vector representing the optimal direction to project data onto.}
 ##' \item{conv}{An integer code. ‘0’ indicates successful completion of the optimization method.}
 ##' @examples
-##' Iris <- iris[-which(iris$Species == "virginica")] # use the first two species only
+##' Iris <- iris[-which(iris$Species == "virginica"), ] # use the first two species only
 ##'
 ##' ## Set up training and test data
 ##' set.seed(2021)

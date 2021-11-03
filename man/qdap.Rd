@@ -51,7 +51,7 @@ Multiple rounds of applications of QDAP is implemented (still in beta status). S
 Penalization/Thresholding is implemented to find sparse optimal direction (still in beta status). See the arguments 'lambda' and 'method'.
 }
 \examples{
-Iris <- iris[-which(iris$Species == "virginica")] # use the first two species only
+Iris <- iris[-which(iris$Species == "virginica"), ] # use the first two species only
 
 ## Set up training and test data
 set.seed(2021)
