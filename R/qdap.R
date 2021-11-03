@@ -82,7 +82,7 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 ##'
 ##' This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
 ##'
-##' The initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
+##' If not specified by the user, the initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
 ##'
 ##' If the covariance matrices are singular, a tiny scalar matrix is added to them for numerical stability.
 ##'
@@ -96,6 +96,8 @@ drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 ##' @param lambda The tuning parameter used for either the "Penalization" method or the "Thresholding" method. (Beta)
 ##' @param iter Number of iterations to apply QDAP. If greater than 1, this will keep searching the optimal direction in the orthogonal complement of the previous optimal subspace. (Beta)
 ##' @param method A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, or "Thresholding" for thresholding over each entry of the optimal direction. (Beta)
+##' @param par A vector representing the initial direction for the optimization subroutine.
+##' @param max_iter Maximum number of iterations for the optimization subroutine to run.
 ##' @param optim The optimization method used towards the classification error function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, or "codesc" for coordinate descent algorithm.
 ##' @return If 'xnew' is not supplied, the return value is a list containing 'qdap_rule', 'drt' and 'conv'. If 'xnew' is supplied, in addition to these, it also contains 'class':
 ##' \item{class}{A 0-1 vector containing the predicted class label of the test data 'xnew'.}

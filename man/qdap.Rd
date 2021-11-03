@@ -29,6 +29,10 @@ qdap(
 
 \item{method}{A method to get sparse optimal direction. "Penalization" for penalizing over the l2 norm of the optimal direction, or "Thresholding" for thresholding over each entry of the optimal direction. (Beta)}
 
+\item{par}{A vector representing the initial direction for the optimization subroutine.}
+
+\item{max_iter}{Maximum number of iterations for the optimization subroutine to run.}
+
 \item{optim}{The optimization method used towards the classification error function. "BFGS" for Broyden–Fletcher–Goldfarb–Shanno algorithm, or "codesc" for coordinate descent algorithm.}
 }
 \value{
@@ -44,7 +48,7 @@ This function runs the Quadratic Discriminant Analysis by Projection (QDAP) meth
 \details{
 This function only handles two-class classification problems. It tries to find the direction that minimizes the sample classification error under the assumption that both class follows normal distribution. It then projects the data onto the optimal direction, and performs 1-D regular QDA.
 
-The initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
+If not specified by the user, the initial direction for the optimization subroutine is either the LDA direction, or the direction that maximizes the ratio of two quadratic forms induced by the covariance matrices.
 
 If the covariance matrices are singular, a tiny scalar matrix is added to them for numerical stability.
 
