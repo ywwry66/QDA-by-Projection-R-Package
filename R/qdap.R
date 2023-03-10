@@ -2,7 +2,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                       lambda = 0, method = "Penalization",
                       par = NULL, max_iter = 1000, optim = "codesc") {
   ## initialization
-  if (method != "Penalization" & method != "Thresholding") {
+  if (method != "Penalization" && method != "Thresholding") {
     stop("Wrong sparse method")
   }
   p <- length(mu0)
@@ -44,7 +44,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
   d <- op$par
   conv <- op$convergence
   a <- d / sqrt(sum(d^2))
-  if (method == "Thresholding" & lambda != 0) {
+  if (method == "Thresholding" && lambda != 0) {
     a[which(abs(a) < lambda)] <- 0
     a[which(a >= lambda)] <- a[which(a >= lambda)] - lambda
     a[which(a <= -lambda)] <- a[which(a <= -lambda)] + lambda
@@ -56,7 +56,7 @@ drt_1iter <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
 drt <- function(mu0, mu1, sigma0, sigma1, sigma, p0, p1,
                 iter = 1, lambda = 0, method = "Penalization",
                 par = NULL, max_iter = 1000, optim = "codesc") {
-  if (iter > 1 & lambda == 0) {
+  if (iter > 1 && lambda == 0) {
     p <- length(mu0)
     a <- matrix(0, p, iter)
     conv <- rep(0, iter)
