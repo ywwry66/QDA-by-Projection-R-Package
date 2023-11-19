@@ -6,7 +6,7 @@ Reference: [[https://arxiv.org/abs/2108.09005][arXiv]].
 If you have =devtools= package installed, you can use a single command
 in R:
 #+begin_src R
-  devtools::install_github(“ywwry66/QDA-by-Projection-R-Package”)
+  devtools::install_github("ywwry66/QDA-by-Projection-R-Package")
 #+end_src
 
 Otherwise, you should download the versioned tarball under Releases -
